@@ -1,0 +1,3 @@
+[console_scripts]
+hog = hog.hog:main
+
