@@ -5,17 +5,29 @@ from flask import Flask, render_template, request, jsonify
 from pyimagesearch.colordescriptor import ColorDescriptor
 from pyimagesearch.searcher import Searcher
 import index
+
 # create flask instance
 app = Flask(__name__)
+
+app.config['MAX_CONTENT_LENGTH'] = 32 * 1024 * 1024
 
 indexer = index.Index()
 
 INDEX_PATH = os.path.join(os.path.dirname(__file__), 'index.pickle')
 
-
+MAX_FILE_SIZE = 1024 * 1024 * 32
 
 # main route
 searcher = Searcher(INDEX_PATH)
+
+def load_file():
+    args = {"method": "GET"}
+    if request.method == "POST":
+        file = request.files["file"]
+        if bool(file.filename):
+            file_bytes = file.read(MAX_FILE_SIZE)
+            args["file_size_error"] = len(file_bytes) == MAX_FILE_SIZE
+    return render_template("index.html", args=args)
 
 @app.route('/')
 def index():
