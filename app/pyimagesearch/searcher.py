@@ -28,7 +28,7 @@ class Searcher:
 				features = self.storedFeatures[key]
 				#features = [float(x) for x in key[][1:]]
 				#d = self.chi2_distance(features, queryFeatures)
-				d = self.euclidean(features, queryFeatures)
+				d = self.cosine(features, queryFeatures)
 				# now that we have the distance between the two feature
 				# vectors, we can udpate the results dictionary -- the
 				# key is the current image ID in the index and the
@@ -42,8 +42,8 @@ class Searcher:
 
 		# return our (limited) results
 		return results[:limit]
-	def euclidean(self, histA, histB):
-		dst = distance.euclidean(histA, histB)
+	def cosine(self, histA, histB):
+		dst = distance.cosine(histA, histB)
 		return dst
 	def chi2_distance(self, histA, histB, eps = 1e-10):
 		# compute the chi-squared distance

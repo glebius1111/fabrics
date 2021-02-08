@@ -9,12 +9,12 @@
     <br>
     <div class="row">
       <div class="col-md-6">
-        <p><img src="file:///home/gleb/flask-image-search-master/app/africa_fabric/0001.jpg" style="height: 250px;" class="img"></p>
-        <p><img src="http://static.pyimagesearch.com.s3-us-west-2.amazonaws.com/vacation-photos/queries/103300.png" style="height: 250px;" class="img"></p>
+        <p><img src="https://thumbs.dreamstime.com/b/%D1%82%D0%BA%D0%B0%D0%BD%D1%8C-%D1%88%D0%B8%D1%84%D0%B5%D1%80%D0%B0-%D1%81-%D1%86%D0%B2%D0%B5%D1%82%D0%BE%D1%87%D0%BD%D1%8B%D0%BC-%D1%83%D0%B7%D0%BE%D1%80%D0%BE%D0%BC-%D1%81%D0%B1%D1%80%D0%BE%D1%81%D0%B0-111490783.jpg" style="height: 250px;" class="img"></p>
+        <p><img src="https://bushelle.ru/upload/iblock/ca1/nomad_09_cobblestone.jpg" style="height: 250px;" class="img"></p>
       </div>
       <div class="col-md-6">
-        <p><img src="http://static.pyimagesearch.com.s3-us-west-2.amazonaws.com/vacation-photos/queries/127502.png" style="height: 250px;" class="img"></p>
-        <p><img src="http://static.pyimagesearch.com.s3-us-west-2.amazonaws.com/vacation-photos/queries/123600.png" style="height: 250px;" class="img"></p>
+        <p><img src="https://provence-design.com.ua/pub/media/catalog/product/cache/1353ca31f482136dde9a662aae397fea/4/3/43209.jpg" style="height: 250px;" class="img"></p>
+        <p><img src="https://thumbs.dreamstime.com/b/%D1%8F%D1%80%D0%BA%D0%B0%D1%8F-%D0%B3%D0%BE%D0%BB%D1%83%D0%B1%D0%B0%D1%8F-%D0%BA%D1%80%D1%83%D0%B6%D0%B5%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D0%BA%D0%B0%D0%BD%D1%8C-%D1%81%D0%B2%D0%B5%D1%80%D1%85%D1%83-105958637.jpg" style="height: 250px;" class="img"></p>
       </div>
     </div>
   </div>
@@ -40,6 +40,49 @@
 
 <form action="/forward/" method="post">
     <button name="indexdb" type="submit">Обновить базу изображений</button>
+
 </form>
+    <form action="/load" method="POST" enctype="multipart/form-data">
+        <input type="file" name="file">
+        <button id="run" type="submit">Загрузить</button>
+    </form>
+ <script>
+  run.onclick = function() {
+    // empty/hide results
+    $("#results").empty();
+    $("#results-table").hide();
+    $("#error").hide();
+
+
+
+    // show searching text
+    $("#searching").show();
+    console.log("searching...")
+
+    // ajax request
+    $.ajax({
+      type: "POST",
+      url: "/search",
+      data : { img : image },
+      // handle success
+      success: function(result) {
+        console.log(result.results);
+        var data = result.results
+        // show table
+        $("#results-table").show();
+        // loop through results, append to dom
+        for (i = 0; i < data.length; i++) {
+          $("#results").append('<tr><th><a href="'+url+data[i]["image"]+'"><img src="'+url+data[i]["image"]+
+            '" class="result-img"></a></th><th>'+data[i]['score']+'</th></tr>')
+        };
+      },
+      // handle error
+      error: function(error) {
+        console.log(error);
+        // append to dom
+        $("#error").append()
+      }
+  };
+</script>
 
 {% endblock %}

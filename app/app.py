@@ -17,15 +17,17 @@ INDEX_PATH = os.path.join(os.path.dirname(__file__), 'index.pickle')
 
 MAX_FILE_SIZE = 1024 * 1024 * 32
 
+loaded_image = None
+
 # main route
 searcher = Searcher(INDEX_PATH)
-
+@app.route("/load", methods=["POST", "GET"])
 def load_file():
     args = {"method": "GET"}
     if request.method == "POST":
-        file = request.files["file"]
-        if bool(file.filename):
-            file_bytes = file.read(MAX_FILE_SIZE)
+        loaded_image = request.files["file"]
+        if bool(loaded_image.filename):
+            file_bytes = loaded_image.read(MAX_FILE_SIZE)
             args["file_size_error"] = len(file_bytes) == MAX_FILE_SIZE
     return render_template("index.html", args=args)
 
@@ -44,7 +46,7 @@ def move_forward():
 
 @app.route('/search', methods=['POST'])
 def search():
-
+    print('dsds')
     if request.method == "POST":
 
         RESULTS_ARRAY = []
@@ -59,6 +61,7 @@ def search():
 
             # load the query image and describe it
             from skimage import io
+
             print(image_url)
             query = io.imread(image_url)
             features = cd.describe(query)
@@ -67,7 +70,9 @@ def search():
             results = searcher.search(features)
 
             # loop over the results, displaying the score and image name
+
             for (score, resultID) in results:
+                print(resultID)
                 RESULTS_ARRAY.append(
                     {"image": str(resultID), "score": str(score)})
 
