@@ -40,49 +40,10 @@
 
 <form action="/forward/" method="post">
     <button name="indexdb" type="submit">Обновить базу изображений</button>
-
 </form>
-    <form action="/load" method="POST" enctype="multipart/form-data">
-        <input type="file" name="file">
-        <button id="run" type="submit">Загрузить</button>
-    </form>
- <script>
-  run.onclick = function() {
-    // empty/hide results
-    $("#results").empty();
-    $("#results-table").hide();
-    $("#error").hide();
-
-
-
-    // show searching text
-    $("#searching").show();
-    console.log("searching...")
-
-    // ajax request
-    $.ajax({
-      type: "POST",
-      url: "/search",
-      data : { img : image },
-      // handle success
-      success: function(result) {
-        console.log(result.results);
-        var data = result.results
-        // show table
-        $("#results-table").show();
-        // loop through results, append to dom
-        for (i = 0; i < data.length; i++) {
-          $("#results").append('<tr><th><a href="'+url+data[i]["image"]+'"><img src="'+url+data[i]["image"]+
-            '" class="result-img"></a></th><th>'+data[i]['score']+'</th></tr>')
-        };
-      },
-      // handle error
-      error: function(error) {
-        console.log(error);
-        // append to dom
-        $("#error").append()
-      }
-  };
-</script>
+     <form action="/load" method="POST" enctype="multipart/form-data">
+       <input type="file" name="file">
+       <button id="run" type="submit">Загрузить</button>
+</form>
 
 {% endblock %}
