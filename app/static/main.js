@@ -15,22 +15,12 @@ $(function() {
   console.log( "ready!" );
 
   // image click
-  $(".img").click(function() {
+  $("run").click(function() {
 
     // empty/hide results
     $("#results").empty();
     $("#results-table").hide();
     $("#error").hide();
-
-    // remove active class
-    $(".img").removeClass("active")
-
-    // add active class to clicked picture
-    $(this).addClass("active")
-
-    // grab image url
-    var image = $(this).attr("src")
-    console.log(image)
 
     // show searching text
     $("#searching").show();
@@ -39,7 +29,7 @@ $(function() {
     // ajax request
     $.ajax({
       type: "POST",
-      url: "/search",
+      url: "/load",
       data : { img : image },
       // handle success
       success: function(result) {

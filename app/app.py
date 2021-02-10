@@ -13,6 +13,8 @@ app.config['MAX_CONTENT_LENGTH'] = 32 * 1024 * 1024
 
 indexer = index.Index()
 
+
+
 INDEX_PATH = os.path.join(os.path.dirname(__file__), 'index.pickle')
 
 MAX_FILE_SIZE = 1024 * 1024 * 32
@@ -21,15 +23,7 @@ loaded_image = None
 
 # main route
 searcher = Searcher(INDEX_PATH)
-@app.route("/load", methods=["POST", "GET"])
-def load_file():
-    args = {"method": "GET"}
-    if request.method == "POST":
-        loaded_image = request.files["file"]
-        if bool(loaded_image.filename):
-            file_bytes = loaded_image.read(MAX_FILE_SIZE)
-            args["file_size_error"] = len(file_bytes) == MAX_FILE_SIZE
-    return render_template("index.html", args=args)
+    #return render_template("index.html", args=args)
 
 @app.route('/')
 def index():
@@ -83,6 +77,44 @@ def search():
 
             # return error
             jsonify({"sorry": "Sorry, no results! Please try again."}), 500
+
+@app.route("/load", methods=["POST", "GET"])
+def load_file():
+    RESULTS_ARRAY = []
+
+    args = {"method": "GET"}
+    if request.method == "POST":
+        loaded_image = request.files["file"]
+        loaded_image.save(loaded_image.filename)
+        try:
+
+            # initialize the image descriptor
+            cd = ColorDescriptor((8, 12, 3))
+
+            # load the query image and describe it
+            from skimage import io
+
+            query = io.imread(loaded_image.filename)
+            features = cd.describe(query)
+            # perform the search
+
+            results = searcher.search(features)
+
+            # loop over the results, displaying the score and image name
+
+            for (score, resultID) in results:
+                print(resultID)
+                RESULTS_ARRAY.append(
+                    {"image": str(resultID), "score": str(score)})
+
+            # return success
+
+        except:
+
+            # return error
+            jsonify({"sorry": "Sorry, no results! Please try again."}), 500
+
+        return jsonify(results=(RESULTS_ARRAY))
 
 
 # run!
