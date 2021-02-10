@@ -80,7 +80,7 @@ def search():
 
 @app.route("/load", methods=["POST", "GET"])
 def load_file():
-    print('dsf')
+    print('dsfd')
     RESULTS_ARRAY = []
 
     args = {"method": "GET"}
